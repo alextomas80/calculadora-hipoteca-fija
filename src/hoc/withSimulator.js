@@ -30,6 +30,7 @@ const withSimulator = (WrappedComponent) => {
       setQuoteFirstYear,
       setQuoteRestYears,
       bonifications,
+      position,
     } = props;
 
     useEffect(() => {
@@ -46,7 +47,7 @@ const withSimulator = (WrappedComponent) => {
       const quote =
         (C * percentInterest) / (1 - Math.pow(1 + percentInterest, -numQuotes));
 
-      setQuoteFirstYear(quote.toFixed(decimalPrecision));
+      setQuoteFirstYear(quote.toFixed(decimalPrecision), position);
     };
 
     const calcRestYears = () => {
@@ -59,7 +60,7 @@ const withSimulator = (WrappedComponent) => {
         (balance * percentInterest) /
         (1 - Math.pow(1 + percentInterest, -numQuotes));
 
-      setQuoteRestYears(quote.toFixed(decimalPrecision));
+      setQuoteRestYears(quote.toFixed(decimalPrecision), position);
     };
 
     const getTotalBonifications = () => {
@@ -75,9 +76,10 @@ const withSimulator = (WrappedComponent) => {
     return <WrappedComponent {...props} />;
   };
 
-  const mapStateToProps = (state) => {
+  const mapStateToProps = (state, { position }) => {
     const { calculadora } = state;
-    const bonificationsValue = calculadora.bonifications.reduce(
+    const simulation = calculadora[position || 0];
+    const bonificationsValue = simulation.bonifications.reduce(
       (acc, bonification) => {
         if (bonification.active) {
           return acc + bonification.value;
@@ -86,31 +88,32 @@ const withSimulator = (WrappedComponent) => {
       },
       0
     );
-    const totalExpenses = calculadora.expenses.reduce(
+    const totalExpenses = simulation.expenses.reduce(
       (acc, expense) => acc + expense.value,
       0
     );
 
     return {
-      ...calculadora,
+      ...simulation,
       totalBonifications: bonificationsValue,
       totalExpenses,
+      position: position || 0,
     };
   };
 
-  const mapStateToDispatch = (dispatch) => {
+  const mapStateToDispatch = (dispatch, props) => {
     return {
-      setPrice: (price) => dispatch(setPriceAction(price)),
+      setPrice: (price) => dispatch(setPriceAction(price, props.position)),
       setPercentage: (percentage) => dispatch(setPercentageAction(percentage)),
       setYears: (years) => dispatch(setYearsAction(years)),
       setMinInterest: (minInterest) =>
         dispatch(setMinInterestAction(minInterest)),
       setMaxInterest: (maxInterest) =>
         dispatch(setMaxInterestAction(maxInterest)),
-      setQuoteFirstYear: (quoteFirstYear) =>
-        dispatch(setQuoteFirstYearAction(quoteFirstYear)),
-      setQuoteRestYears: (quoteRestYears) =>
-        dispatch(setQuoteRestYearsAction(quoteRestYears)),
+      setQuoteFirstYear: (quoteFirstYear, position) =>
+        dispatch(setQuoteFirstYearAction(quoteFirstYear, position)),
+      setQuoteRestYears: (quoteRestYears, position) =>
+        dispatch(setQuoteRestYearsAction(quoteRestYears, position)),
       addBonification: (bonification) =>
         dispatch(addBonificationAction(bonification)),
       selectBonification: (bonification) =>

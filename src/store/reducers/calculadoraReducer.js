@@ -83,13 +83,19 @@ const initialState = {
     },
   ],
 };
+const simulaciones = [initialState];
 
-const breedReducer = (state = initialState, action) => {
+const breedReducer = (state = simulaciones, action) => {
   switch (action.type) {
     case types.SET_PRICE:
+      console.log(action);
+      const simulator = [...state];
+      simulator[action.index].price = action.payload.price;
+
       return {
         ...state,
-        price: action.payload,
+        // price: action.payload,
+        calculadora: simulator,
       };
     case types.SET_PERCENTAGE:
       return {
@@ -112,15 +118,21 @@ const breedReducer = (state = initialState, action) => {
         maxInterest: +action.payload,
       };
     case types.SET_QUOTE_FIRST_YEAR:
-      return {
-        ...state,
-        quoteFirstYear: +action.payload,
-      };
+      const simulation = state[action.payload.position].quoteFirstYear;
+      // simulation.quoteFirstYear = +action.payload.quoteFirstYear;
+      // const newState = [...state];
+      // return {
+      //   ...state,
+      //   // quoteFirstYear: +action.payload.quoteFirstYear,
+      // };
+      return [...state];
     case types.SET_QUOTE_REST_YEARS:
-      return {
-        ...state,
-        quoteRestYears: +action.payload,
-      };
+      // return {
+      //   ...state,
+      //   // quoteRestYears: +action.payload,
+      // };
+      return [...state];
+
     case types.ADD_BONIFICATION:
       return {
         ...state,

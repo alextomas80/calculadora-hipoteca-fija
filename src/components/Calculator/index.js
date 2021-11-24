@@ -22,7 +22,6 @@ const Calculator = () => {
           <ExpensesData />
           <Bonifications />
         </InitialData>
-
         <ResumeData>
           <Resume />
         </ResumeData>

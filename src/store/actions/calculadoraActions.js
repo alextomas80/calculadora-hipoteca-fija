@@ -1,9 +1,9 @@
 import * as types from "../types";
 
-const setPrice = (price) => (dispatch) => {
+const setPrice = (price, position) => (dispatch) => {
   dispatch({
     type: types.SET_PRICE,
-    payload: +price,
+    payload: { price, position },
   });
 };
 
@@ -35,10 +35,10 @@ const setMaxInterest = (maxInterest) => (dispatch) => {
   });
 };
 
-const setQuoteFirstYear = (quoteFirstYear) => (dispatch) => {
+const setQuoteFirstYear = (quoteFirstYear, position) => (dispatch) => {
   dispatch({
     type: types.SET_QUOTE_FIRST_YEAR,
-    payload: quoteFirstYear,
+    payload: { quoteFirstYear, position },
   });
 };
 
